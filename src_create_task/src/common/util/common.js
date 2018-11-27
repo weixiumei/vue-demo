@@ -58,3 +58,44 @@ export function debounce(method, delay) {
     }, delay);
     // }
 }
+
+// yyyy-mm-dd
+export function get_date_format (date){
+    var year = date.getFullYear();
+    var day = date.getDate();
+    var month = date.getMonth()+1;
+    if (day < 10) {
+      day = '0' + day;
+    }
+    if (month < 10) {
+      month = '0' + month;
+    }
+    return year + '-' + month + '-' + day;
+}
+
+// 某日期向前/向后推几个月
+export function GetPreMonthDay (date,monthNum) {
+      var dateArr = date.split('-');
+      var year = dateArr[0]; //获取当前日期的年份
+      var month = dateArr[1]; //获取当前日期的月份
+      var day = dateArr[2]; //获取当前日期的日
+      var days = new Date(year, month, 0);
+      days = days.getDate(); //获取当前日期中月的天数
+      var year2 = year-parseInt(monthNum/12);
+      var month2 = parseInt(month) - monthNum;
+      if (month2 <=0) {
+       year2 = parseInt(year2) - parseInt(month2 / 12 == 0 ? 1 : parseInt(month2) / 12);
+       month2 = 12 - (Math.abs(month2) % 12);
+      }
+      var day2 = day;
+      var days2 = new Date(year2, month2, 0);
+      days2 = days2.getDate();
+      if (day2 > days2) {
+       day2 = days2;
+      }
+      if (month2 < 10) {
+       month2 = '0' + month2;
+      }
+      var t2 = year2 + '-' + month2 + '-' + day2;
+      return t2;
+}

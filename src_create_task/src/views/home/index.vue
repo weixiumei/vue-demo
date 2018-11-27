@@ -2,93 +2,42 @@
   <div class="home">
     <!-- 创建的任务列表 -->
     <div class="weui-cells" v-show="isActive == 'now_task'">
-      <a v-for="task in task_list" :key="task.task_code" class="weui-cell weui-cell_access" v-on:click="goTaskDetail(task)">
-          <div class="weui-cell__bd">
-              <p>{{task.task_name}}</p>
+      <div class="page__bd" :style="{maxHeight: maxheight + 'px','overflow':'scroll','background':'#fff'}">
+        <div class="weui-tab">
+          <div class="weui-navbar">
+            <div v-for="state in state_list" :key="state.code" class="weui-navbar__item" :class="selected_state==state.code?'weui-bar__item_on':''" @click="change_state(state.code)">
+              {{state.name}}
+            </div>
           </div>
-          <div class="weui-cell__bd">
-              <p>{{task.task_user}}</p>
-          </div>
-          <div class="weui-cell__bd">
-            <p class="task_state_text">{{task.task_state_text}}</p>
-          </div>
-          <div class="weui-cell__ft">
-          </div>
-      </a>
-      <div class="nodata" v-if="task_list.length==0&&!loadingToastShow">暂无任务</div>
-    </div>
-    <!-- 任务详情 -->
-    <div class="task_info" v-show="isActive == 'now_task_info'" style="padding-bottom: 1.6rem;min-height: 667px;background: #fff;">
-      <!-- <input type="text" style="border:1px solid #d5d5d5;" v-model="task_item.task_name"> -->
-      <div style="padding: 10px;margin-top: 0;">
-        <div class="weui-cell" :class="edit ? 'border':''" >
-          <div class="weui-cell__bd" style="margin-top:0;">
-            <input class="weui-input font-weight-500" :disabled="!edit" type="text" v-model="task_item.task_name" placeholder="任务标题"/>
-          </div>
-        </div>
-        <textarea class="weui-textarea" :class="edit ? 'border':''" :disabled="!edit" placeholder="任务描述" v-model="task_item.task_context" rows="3"></textarea>
-      </div>
-      <div class="jiange"></div>
-      <div style="padding: 10px;">
-        <div>
-          <label 
-            class=""
-            style=""
-            >
-            {{task_item.task_user}}
-          </label>
-          <select name="select1" v-model="task_item.task_state" class="state" :class="edit ? 'border':'no_border'" :disabled="!edit">
-            <option selected="" v-for="(value, key) in state_list" :key="key" :value="value.code">{{value.name}}</option>
-          </select>
-        </div>
-        <div>
-          <span>任务时间 </span>
-          <input class="weui-input" :class="edit ? 'border':''" :disabled="!edit" type="date" v-model="task_item.start_date" style="width:36%;padding: 15px 3px;text-align:center;"/>
-          至 <input class="weui-input" :class="edit ? 'border':''" :disabled="!edit" type="date" v-model="task_item.end_date" style="width:36%;padding: 15px 3px;"/>
-        </div>
-        <!-- <div>
-          <span>完成状态 </span>
-          <select name="select1" v-model="task_item.task_state" :class="edit ? 'border':'no_border'" :disabled="!edit" style="background: #fff;border-radius: 1px;">
-            <option selected="" v-for="(value, key) in state_list" :key="key" :value="value.code">{{value.name}}</option>
-          </select>
-        </div> -->
-        <div v-on:click="goMemberList()" style="color:#0068c9;">查看相关会员</div>
-      </div>
-      <div class="btn_div">
-        <div v-on:click="goBack1()" class="weui-btn weui-btn_default">返回</div>
-        <div v-on:click="edit_btn()" v-show="!edit" class="weui-btn weui-btn_default">编辑</div>
-        <div v-on:click="save()" v-show="edit" class="weui-btn weui-btn_default" style="padding: 0 12px;margin-right: 0;">保存</div>
-        <div v-on:click="cancel_edit()" v-show="edit" class="weui-btn weui-btn_default" style="padding: 0 12px;margin-left: 8px;">取消</div>
-      </div> 
-    </div>
-    <!-- 查看相关会员 -->
-    <div v-show="isActive == 'member_list2'">
-      <div style="padding-bottom: 1.6rem;">
-        <div class="weui-cells" v-for="member in member_list" :key="member.code">
-          <div class="weui-cell" >
-              <div class="weui-cell__bd">
-                  <p>{{member.member_name}}</p>
+          <div class="weui-tab__panel member_list">
+            <div v-for="task in task_list" :key="task.task_code" style="border-bottom:1px solid #e5e5e5;">
+              <div class="weui-cell weui-cell_access" v-on:click="goTaskDetail(task)">
+                <div class="weui-cell__bd">
+                  <p class="title_name"><img src="static/img/task.png" style="width: 12px;" alt=""> {{task.task_name}}</p>
+                </div>
+                <div class="weui-cell__bd">
+                  <p class="task_state_text">{{task.task_state_text}}</p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
               </div>
-              <div class="weui-cell__ft">{{member.mobile==''?'暂无':member.mobile}}</div>
+              <div class="weui-cell">
+                <div class="weui-cell__bd">
+                  <p class="task_user">指派给：{{task.task_user}}</p>
+                </div>
+                <div class="">
+                  <p style="text-align: right;color: rgba(53,53,53,0.5);">完成进度：<span style="color:#ED9400;">{{task.market_percent}}%</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="nodata" v-if="task_list.length==0">暂无任务</div>
           </div>
         </div>
-      </div>
-      <div class="btn_div">
-        <div v-on:click="goBack2()" class="weui-btn weui-btn_default">返回</div>
       </div>
     </div>
     <!-- 筛选会员 -->
     <div v-show="isActive == 'create'" style="padding-bottom: 60px;">
       <div class="weui-cells weui-cells_form">
-        <!-- 门店 -->
-        <!-- <div class="weui-cell">
-          <div class="weui-cell__hd"><label for="" class="weui-label">门店</label></div>
-          <div class="weui-cell__bd">
-            <select name="select1" v-model="shop_id">
-              <option selected="" v-for="(value, key) in shop_list" :key="key" :value="value.shop_id">{{value.shop_name}}</option>
-            </select>
-          </div>
-        </div> -->
         <!-- 最近购物日期 -->
         <div class="weui-cell">
             <div class="weui-cell__hd"><label for="" class="weui-label">最近购物日期</label></div>
@@ -116,11 +65,6 @@
         <div class="weui-cell">
             <div class="weui-cell__hd"><label for="" class="weui-label">生日月</label></div>
             <div class="weui-cell__bd">
-                <!-- <select name="select1">
-                    <option selected="" value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select> -->
                 <label 
                   class="label_style" 
                   v-for="month in birthday_month_list" 
@@ -209,103 +153,31 @@
         </div>
       </div>
       <!-- <i v-show="member_list_loading" class="weui-loading"></i> -->
-		  <div v-on:click="next_member_list()" class="weui-btn weui-btn_default weui-btn_loading" style="margin: 15px 55px 0 55px;">下一步</div>
+		  <div v-on:click="get_member_list()" class="weui-btn weui-btn_default weui-btn_loading" style="margin: 15px 55px 0 55px;">下一步</div>
     </div>
-    <!-- 筛选出的会员list -->
-    <div v-show="isActive == 'member_list'">
-      <div v-if="member_list.length>0">
-        <div style="padding-bottom: 1.6rem;">
-          <div class="weui-cells" v-for="member in member_list" :key="member.code" v-on:click="toggle_select_click(member)">
-            <div class="weui-cell" >
-              <img src="src/assets/image/check-box-on.png" v-show="member.selected" style="width: 20px;margin: 0 10px;">
-              <img src="src/assets/image/check-box-off.png" v-show="!member.selected" style="width: 20px;margin: 0 10px;">
-              <!-- <div style="width: 20px;margin: 0 10px;" v-show="!member.selected"></div> -->
-              <div class="weui-cell__bd">
-                  <p>{{member.member_name}}</p>
-              </div>
-              <div class="weui-cell__ft">{{member.mobile==''?'暂无':member.mobile}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="btn_div">
-          <div v-on:click="pre_to_condition()" class="weui-btn weui-btn_default">上一步</div>
-          <div v-on:click="next_to_edit()" class="weui-btn weui-btn_default">下一步</div>
-        </div>
-      </div>
-      <div v-if="member_list.length==0">
-        <div class="nodata">暂无会员</div>
-        <div class="btn_div">
-          <div v-on:click="pre_to_condition()" class="weui-btn weui-btn_default">上一步</div>
-        </div>
-      </div>
-    </div>
-    <!-- 编辑任务 -->
-    <div class="task_info" v-show="isActive == 'task_edit'" style="padding-bottom: 1.6rem;min-height: 667px;background: #fff;">
-      <!-- <input type="text" style="border:1px solid #d5d5d5;" v-model="task_item.task_name"> -->
-      <div style="padding: 10px;margin-top: 0;">
-        <div class="weui-cell border">
-          <div class="weui-cell__bd" style="margin-top:0;">
-            <input class="weui-input font-weight-500" type="text" v-model="task_name" placeholder="任务标题"/>
-          </div>
-        </div>
-        <textarea class="weui-textarea border" placeholder="任务描述" v-model="task_context" rows="3"></textarea>
-      </div>
-      <div class="jiange"></div>
-      <div style="padding: 10px;">
-        <div>
-          <span>任务时间 </span>
-          <input class="weui-input border" type="date" v-model="start_date" style="width:36%;padding: 15px 3px;text-align:center;"/>
-          至 <input class="weui-input border" type="date" v-model="end_date" style="width:36%;padding: 15px 3px;"/>
-        </div>
-        <div class="weui-cells__title">分配给如下导购</div>
-        <label 
-          class="label_style" 
-          v-for="guide in shopping_guide" 
-          :key="guide.code" 
-          :class="{selected: guide.selected}"
-          @click="item_click(guide, 'guide_param_list')"
-          >
-          {{guide.user_name}}
-        </label>
-        <!-- <div v-on:click="goMemberList()" style="color:#0068c9;">查看相关会员</div> -->
-      </div>
-      <div class="btn_div">
-        <div v-on:click="cancel()" class="weui-btn weui-btn_default">返回</div>
-        <div v-on:click="finish()" class="weui-btn weui-btn_default">完成</div>
-      </div>
-    </div>
-
     <!-- tab -->
     <div v-show="isActive == 'now_task'||isActive == 'create'" class="weui-tabbar">
-        <div href="javascript:;" class="weui-tabbar__item" v-on:click="active('now_task')" v-bind:class="{ 'weui-bar__item_on': isActive == 'now_task' }">
-            <p class="weui-tabbar__label" style="margin: 10px 0;">现有任务</p>
-        </div>
-        <div href="javascript:;" class="weui-tabbar__item" v-on:click="active('create')" v-bind:class="{ 'weui-bar__item_on': isActive == 'create' }">
-            <p class="weui-tabbar__label" style="margin: 10px 0;">新建任务</p>
-        </div>
-    </div>
-    <!-- loading -->
-    <div v-show="loadingToastShow" id="loadingToast" style="display:none;">
-      <div class="weui-mask_transparent"></div>
-      <div class="weui-toast">
-          <i class="weui-loading weui-icon_toast"></i>
-          <!-- <p class="weui-toast__content"></p> -->
+      <div href="javascript:;" class="weui-tabbar__item" v-on:click="active('now_task')" v-bind:class="{ 'weui-bar__item_on': isActive == 'now_task' }">
+        <p class="weui-tabbar__label" style="margin: 10px 0;font-size: 16px;">现有任务</p>
+      </div>
+      <div href="javascript:;" class="weui-tabbar__item" v-on:click="active('create')" v-bind:class="{ 'weui-bar__item_on': isActive == 'create' }">
+        <p class="weui-tabbar__label" style="margin: 10px 0;font-size: 16px;">新建任务</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import { GET_SHOP_LIST, GET_MARKETING_TASK_LIST, GET_MARKETING_TASK_INFO, MEMBER_LEVEL_LIST, MEMBER_LIST, MARKETING_TASK_EDIT_INFO, GET_SEARCH_RELATED_USERS, UPDATE_TASK_INFO } from "@/api";
+  // import navbar from "./../../../node_modules/vue-weui/components/tab/navbar"
+  import { get_date_format, GetPreMonthDay } from '@/common/util/common'
+  import { GET_SHOP_LIST, GET_MARKETING_TASK_LIST, MEMBER_LEVEL_LIST, MEMBER_LIST } from "@/api";
   export default {
     name: "home",
     data() {
       return {
-        edit:false,
-        loadingToastShow:false,
-        // member_list_loading:false,
+        maxheight:'',
         isActive:'now_task',
-        login_name:`${window.localStorage.getItem('login_name')}`,
+        login_name:localStorage.getItem('login_name'),
         // 筛选会员条件
         last_shopping_date_param_list:[],
         start_open_card_date:'',
@@ -316,12 +188,6 @@
         card_styles_param_list:[],
         point_param_list:[],
         season_param_list:[],
-        // 创建任务输入
-        start_date:'',
-        end_date:'',
-        task_name:'',
-        task_context:'',
-        guide_param_list:[],
 
         // 任务的状态：’draft’代表”草稿”，’process’代表”进行中”, ‘done’代表’完成’,’invalid’代表’作废’
         state_list:[
@@ -342,11 +208,13 @@
             code:'invalid'
           }
         ],
+        selected_state:'draft',
+        // remarks:'',
         task_list:[],
         task_item:{},
         shop_list:[
         ],
-        shop_id:`${window.localStorage.getItem('shop_id')}`*1,
+        shop_id:localStorage.getItem('shop_id')*1,
         last_shoping_date_list:[
           {
             name:'1个月以内',
@@ -552,19 +420,24 @@
         ],
         member_list:[
         ],
+        member_selected_list:[],
         shopping_guide:[
         ]
       }
     },
     methods: {
+      change_state: function (state_index) {
+        this.selected_state = state_index;
+        this.get_marketing_task_list();
+      },
       // tab切换
       active: function (tab) {
         this.isActive = tab;
         if(this.isActive=='create'){
           // init
           this.last_shopping_date_param_list=[];
-          this.start_open_card_date=this.GetPreMonthDay(this.get_date_format(new Date()), 12);
-          this.end_open_card_date=this.get_date_format(new Date());
+          this.start_open_card_date=GetPreMonthDay(get_date_format(new Date()), 12);
+          this.end_open_card_date=get_date_format(new Date());
           this.birthday_month_param_list=[];
           this.style_param_list=[];
           this.sex_param='';
@@ -572,18 +445,22 @@
           this.point_param_list = [];
           this.tag_code_list = [];
           this.season_param_list = [];
+          // this.guide_param_list=[];
+          
+          // this.start_date=this.get_date_format(new Date());
+          // this.end_date=this.GetPreMonthDay(this.get_date_format(new Date()), -1);
+          // this.task_name='';
+          // this.task_context='';
 
-          this.start_date=this.get_date_format(new Date());
-          this.end_date=this.GetPreMonthDay(this.get_date_format(new Date()), -1);
-          this.task_name='';
-          this.task_context='';
-
-          this.init_selected_to_false(this.last_shoping_date_list, this.last_shopping_date_param_list, 0);
+          this.init_selected_to_false(this.last_shoping_date_list, this.last_shopping_date_param_list);
           this.init_selected_to_false(this.birthday_month_list);
           this.init_selected_to_false(this.style_list);
           this.init_selected_to_false(this.sex_list);
-          this.init_selected_to_false(this.card_style_list, this.card_styles_param_list, 0, 'level_code');
-          this.init_selected_to_false(this.points, this.point_param_list, 0, 'code');
+          // this.init_selected_to_false(this.card_style_list, this.card_styles_param_list, 0, 'level_code');
+          // this.init_selected_to_false(this.points, this.point_param_list, 0, 'code');
+
+          this.init_selected_to_false(this.card_style_list, this.card_styles_param_list);
+          this.init_selected_to_false(this.points, this.point_param_list);
           this.init_selected_to_false(this.season_list);
           this.init_selected_to_false(this.shopping_guide);
           // this.$forceUpdate();
@@ -649,55 +526,18 @@
           }
         }
       },
-      get_date_format: function(date){
-        var year = date.getFullYear();
-        var day = date.getDate();
-        var month = date.getMonth()+1;
-        if (day < 10) {
-          day = '0' + day;
-        }
-        if (month < 10) {
-          month = '0' + month;
-        }
-        return year + '-' + month + '-' + day;
-      },
-      GetPreMonthDay:function (date,monthNum) {
-        var dateArr = date.split('-');
-        var year = dateArr[0]; //获取当前日期的年份
-        var month = dateArr[1]; //获取当前日期的月份
-        var day = dateArr[2]; //获取当前日期的日
-        var days = new Date(year, month, 0);
-        days = days.getDate(); //获取当前日期中月的天数
-        var year2 = year-parseInt(monthNum/12);
-        var month2 = parseInt(month) - monthNum;
-        if (month2 <=0) {
-         year2 = parseInt(year2) - parseInt(month2 / 12 == 0 ? 1 : parseInt(month2) / 12);
-         month2 = 12 - (Math.abs(month2) % 12);
-        }
-        var day2 = day;
-        var days2 = new Date(year2, month2, 0);
-        days2 = days2.getDate();
-        if (day2 > days2) {
-         day2 = days2;
-        }
-        if (month2 < 10) {
-         month2 = '0' + month2;
-        }
-        var t2 = year2 + '-' + month2 + '-' + day2;
-        return t2;
-      },
       transform_date: function (month_string_arr) {
         let month_date_arr = [];
         let now_date = new Date();
         let year_month_day = now_date.getFullYear() + '-' + ((now_date.getMonth()+1)<10 ? ('0'+(now_date.getMonth()+1)):(now_date.getMonth()+1)) + '-' + (now_date.getDate()<10 ? ('0'+now_date.getDate()):now_date.getDate())
 
         if(month_string_arr.length==2){
-          month_date_arr[0] = this.GetPreMonthDay(year_month_day,month_string_arr[1]);
-          month_date_arr[1] = this.GetPreMonthDay(year_month_day,month_string_arr[0]);
+          month_date_arr[0] = GetPreMonthDay(year_month_day,month_string_arr[1]);
+          month_date_arr[1] = GetPreMonthDay(year_month_day,month_string_arr[0]);
         }else{
-          month_date_arr[0] = this.GetPreMonthDay(year_month_day,month_string_arr[0]);
+          month_date_arr[0] = GetPreMonthDay(year_month_day,month_string_arr[0]);
           if(!!month_string_arr[1]){
-            month_date_arr[1] = this.GetPreMonthDay(year_month_day,month_string_arr[1]);
+            month_date_arr[1] = GetPreMonthDay(year_month_day,month_string_arr[1]);
           }
         }
         return month_date_arr;
@@ -721,9 +561,9 @@
         return tYear+"-"+tMonth+"-"+tDate;
       },
       // 下一步到会员list
-      next_member_list: function () {
+      get_member_list: function () {
+        var that = this;
         this.member_list_loading = true;
-        this.loadingToastShow = true;
         // 最近购物日期
         let last_shopping_date_param_list = [];
         for(let i=0;i<this.last_shopping_date_param_list.length;i++){
@@ -771,93 +611,23 @@
           "level_code_list":this.card_styles_param_list,
           "point_range_list":point_param_list
         }
-        console.log(data);
         MEMBER_LIST(data).then(res => {
-          this.member_list = res.data.member_list;
-          this.member_list.forEach(item => {
+          that.member_list = res.data.member_list;
+          that.member_list.forEach(item => {
             item.selected = true;
           })
-          this.isActive = 'member_list';
-          // this.member_list_loading = false;
-          this.loadingToastShow = false;
+          that.$router.push({
+            name: "会员列表",
+            params: { member_list: that.member_list }
+          }) 
         })
-      },
-      toggle_select_click: function (e) {
-        e.selected = !e.selected;
-        this.$forceUpdate();
       },
       // 进去任务详情
       goTaskDetail: function (e) {
-        this.isActive = 'now_task_info';
-        this.edit = false;
-        this.task_item = e;
-        // 任务的状态：’draft’代表”草稿”，’process’代表”进行中”, ‘done’代表’完成’,’invalid’代表’作废’
-        // switch(this.task_item.task_state){
-        //   case 'draft':
-        //     this.task_item.task_state_text = '未完成';
-        //     break;
-        //   case 'process':
-        //     this.task_item.task_state_text = '进行中';
-        //     break;
-        //   case 'done':
-        //     this.task_item.task_state_text = '完成';
-        //     break;
-        //   case 'invalid':
-        //     this.task_item.task_state_text = '作废';
-        //     break;
-        // }
-      },
-      goMemberList: function () {
-        var that = this;
-        GET_MARKETING_TASK_INFO({'task_code': that.task_item.task_code}).then(res => {
-          that.isActive = 'member_list2';
-          that.member_list = res.data.task_info.member_list;
+        this.$router.push({
+          name:'任务详情',
+          params:{task_item:e}
         })
-      },
-      edit_btn: function () {
-        this.edit = true;
-      },
-      cancel_edit: function () {
-        this.edit = false;
-      },
-      // 更新任务
-      save: function () {
-        var data = {
-          "task_code": this.task_item.task_code,
-          "task_name": this.task_item.task_name,
-          "task_context": this.task_item.task_context,
-          "task_state": this.task_item.task_state,
-          "start_date": this.task_item.start_date,
-          "end_date": this.task_item.end_date
-        }
-        if(!data.task_name){
-          alert('请输入任务标题');
-          return;
-        }
-        if(!data.task_context){
-          alert('请输入任务描述');
-          return;
-        }
-        if(!data.start_date||!data.end_date){
-          alert('请输入任务时间');
-          return;
-        }
-        this.loadingToastShow = true;
-        // var data = this.task_item;
-        UPDATE_TASK_INFO(data).then(res => {
-          console.log(res);
-          this.edit = false;
-          this.loadingToastShow = false;
-          // that.member_list = res.data.task_info.member_list;
-        })
-      },
-      // 返回
-      goBack1: function () {
-        this.isActive = 'now_task';
-      },
-      // 返回
-      goBack2: function () {
-        this.isActive = 'now_task_info';
       },
       removeItem: function(src, cb) {
         var counter = src.length - 1;
@@ -874,85 +644,15 @@
           }
         }
       },
-      // 下一步到编辑
-      next_to_edit: function () {
-        
-        this.removeItem(this.member_list, c => c.selected == false);
-        if(this.member_list.length==0){
-          alert('请至少选择一个会员');
-          return;
-        }
-        this.loadingToastShow = true;
-        let that = this;
-        // 导购列表
-        GET_SEARCH_RELATED_USERS({"login_name": this.login_name, "related_shop_id":this.shop_id}).then(res => {
-          console.log('导购列表', res);
-          that.shopping_guide = res.data.user_info_list;
-          that.shopping_guide.forEach(item => {
-            item.selected = false;
-          })
-          that.isActive = 'task_edit';
-          this.loadingToastShow = false;
-        })
-      },
-      // 上一步到筛选
-      pre_to_condition: function () {
-        this.isActive = 'create';
-      },
-      // 返回
-      cancel: function () {
-        this.isActive = 'member_list'
-      },
-      // 完成
-      finish: function () {
-        if(!this.task_name){
-          alert('请输入任务标题');
-          return;
-        }
-        if(!this.task_context){
-          alert('请输入任务描述');
-          return;
-        }
-        if(!this.start_date||!this.end_date){
-          alert('请输入任务时间');
-          return;
-        }
-        if(this.guide_param_list.length==0){
-          alert('请输入需分配的导购');
-          return;
-        }
-        this.loadingToastShow = true;
-        var data={
-          "login_name": this.login_name,
-          "related_shop_id":this.shop_id,
-          "res_code_list": this.guide_param_list,
-          "start_date": this.start_date,
-          "end_date": this.end_date,
-          "task_context": this.task_context,
-          "task_name": this.task_name,
-          "member_info_list": this.member_list
-        }
-        
-        MARKETING_TASK_EDIT_INFO(data).then(res => {
-          // this.member_list = res.data.member_list;
-          this.isActive = 'member_list';
-          // this.member_list_loading = false;
-          this.isActive = 'now_task';
-          this.loadingToastShow = false;
-          this.get_marketing_task_list();
-        })
-      },
       get_marketing_task_list: function () {
-        this.loadingToastShow = true;
         var that = this;
         // 任务列表
         var data = {
-          "login_name":this.login_name
-          // "task_state":"draft"
+          "login_name":this.login_name,
+          "task_state":this.selected_state
         }
         GET_MARKETING_TASK_LIST(data).then(res => {
           this.task_list = res.data.task_info_list;
-          this.loadingToastShow = false;
           for(let i=0;i<this.task_list.length;i++){
             // 任务的状态：’draft’代表”草稿”，’process’代表”进行中”, ‘done’代表’完成’,’invalid’代表’作废’
             switch(this.task_list[i].task_state){
@@ -970,6 +670,15 @@
                 break;
             }
           }
+          // 按start_date，end_date排序
+          var sorted = this.task_list.sort(function(a, b) {
+              const first = Date.parse(a.start_date) - Date.parse(b.start_date);
+              if (first !== 0) {
+                return first;
+              }
+              return Date.parse(a.end_date) - Date.parse(b.end_date);
+          });
+          this.task_list = sorted;
         })
       },
       dispatchEvent(event, message) {
@@ -983,8 +692,15 @@
       }
     },
     mounted: function() {
+      var screabHeight = window.innerHeight
+      this.maxheight = screabHeight - 52;
     },
     created(){
+      // 会员列表返回
+      if(!!this.$route.params.isActive){
+        this.isActive = this.$route.params.isActive
+      }
+
       // 任务列表
       this.get_marketing_task_list();
       var that = this;
@@ -996,13 +712,77 @@
       // })
       // 等级
       MEMBER_LEVEL_LIST().then(res => {
+        res.data.result = [
+          {
+              "level_name": "女装自营普卡",
+              "level_discount": 1,
+              "level_code": "019",
+              "level_id": 647
+          },
+          {
+              "level_name": "AP自营普通卡",
+              "level_discount": 1,
+              "level_code": "031",
+              "level_id": 89
+          },
+          {
+              "level_name": "V卡",
+              "level_discount": 1,
+              "level_code": "013",
+              "level_id": 3
+          },
+          {
+              "level_name": "童装管理层卡",
+              "level_discount": 1,
+              "level_code": "016",
+              "level_id": 4
+          },
+          {
+              "level_name": "心悦卡",
+              "level_discount": 1,
+              "level_code": "018",
+              "level_id": 6
+          },
+          {
+              "level_name": "成长卡",
+              "level_discount": 1,
+              "level_code": "030",
+              "level_id": 7
+          },
+          {
+              "level_name": "F卡",
+              "level_discount": 1,
+              "level_code": "015",
+              "level_id": 8
+          },
+          {
+              "level_name": "童装加盟F卡",
+              "level_discount": 1,
+              "level_code": "060",
+              "level_id": 2
+          },
+          {
+              "level_name": "童装加盟卡",
+              "level_discount": 1,
+              "level_code": "014",
+              "level_id": 1
+          },
+          {
+              "level_name": "童装VIP卡",
+              "level_discount": 1,
+              "level_code": "846",
+              "level_id": 64
+          }
+        ];
         that.card_style_list = res.data.result;
+        
         that.card_style_list.forEach(item => {
           item.selected = false;
         })
       })
     },
     components: {
+      // navbar
     }
   };
 </script>
@@ -1019,22 +799,9 @@
 .weui-btn{
   font-size: 16px;
 }
-.label_style{
-  border: 1px solid #e4e5e5;
-  padding: 4px 8px;
-  margin: 3px;
-  display: inline-block;
-}
-.btn_div{
-  width: 100%;
-  position: fixed;
-  bottom: .5rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-}
-.btn_div div{
-  padding: 0 45px;
+.weui-btn_default{
+  border: 1px solid #1296db;
+  color: #1296db;
 }
 .selected{
   border: 1px solid;
@@ -1047,40 +814,32 @@
   text-align: center;
   padding: 1rem;
 }
-/* .task_info{
-  margin: 10px;
-} */
-.task_info div, .task_info textarea{
-  margin-top: 10px;
-}
-.task_info textarea{
-  /* border: 1px solid rgb(213, 213, 213); */
-  padding: 10px;
-  /* background: #EDF0F4; */
-}
-.border{
-  border: 1px solid #e4e5e5;
-  background: #fbfcfe!important;
-}
-.no_border{
-  border:0;
-}
-.font-weight-500{
-  font-weight: 500;
-}
-.state{
-  /* background: #EDF0F4; */
-  background: #fff;
-  border-radius: 1px;
-  float: right;
-  padding: 0 12px;
-}
-.jiange{
-  height: 10px;
-  width: 100%;
-  background: #EDF0F4;
-}
 .task_state_text{
   text-align: right;
+}
+.weui-navbar{
+  position: fixed;
+}
+.title_name{
+  color:#353535;
+  font-weight: 500;
+  font-size: 16px;
+  width: 4.4rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-right: 0;
+}
+.members .weui-cell:before{
+  border-top: 0;
+}
+.member_list .weui-cell:before{
+  border-top: 0;
+}
+.task_user{
+  width: 4.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

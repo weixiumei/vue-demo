@@ -28,10 +28,10 @@ if (TOKEN) {
 }
 // POST/GET/PUT/DELETE 请求
 function Request(url, method, params, data, visible = true, errcb) {
-    // if (visible) Vue.prototype.$loading()
+    if (visible) Vue.prototype.$loading()
     return new Promise(function(resolve, reject) {
         axios(commonRequest(url, method, params, data)).then((res) => {
-            // Vue.prototype.$loading.close()
+            Vue.prototype.$loading.close()
             if (res.data.code == ERR_OK) {
                 resolve(res.data)
             } else if (res.data.code === INVALID_TOKEN) {
@@ -55,9 +55,12 @@ function Request(url, method, params, data, visible = true, errcb) {
                 // alert(res.data.message);
             }
         }).catch(err => {
-            // Vue.prototype.$loading.close()
+            Vue.prototype.$loading.close()
             // Vue.prototype.$message.error(err.message)
-            reject(err)
+            reject(err);
+            if(err.response.status==500){
+                alert('请联系管理员！');
+            }
         })
     })
 }
@@ -74,54 +77,61 @@ function Request(url, method, params, data, visible = true, errcb) {
  * 门店列表
  */
 export function GET_SHOP_LIST(data) {
-    return Request('/api/v6/c_minipeace/sale_shop/related_shop_info/get', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/sale_shop/related_shop_info/get', 'POST', undefined, data)
 }
 
 /**
  * 查询等级信息
  */
 export function MEMBER_LEVEL_LIST(data) {
-    return Request('/api/v6/member/level_info/get', 'POST', undefined, data, false)
+    return Request('/api/v6/member/level_info/get', 'POST', undefined, data)
 }
 
 /**
  * 查询导购营销会员对象列表
  */
 export function MEMBER_LIST(data) {
-    return Request('/api/v6/c_minipeace/marketing_member/search_marketing_member_list/get', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/marketing_member/search_marketing_member_list/get', 'POST', undefined, data)
 }
 
 /**
  * 查询任务list
  */
 export function GET_MARKETING_TASK_LIST(data) {
-    return Request('/api/v6/c_minipeace/marketing_task/master_marketing_task_list/get', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/marketing_task/master_marketing_task_list/get', 'POST', undefined, data)
 }
 
 /**
  * 查询任务info
  */
 export function GET_MARKETING_TASK_INFO(data) {
-    return Request('/api/v6/c_minipeace/marketing_task/marketing_task_info/get', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/marketing_task/marketing_task_info/get', 'POST', undefined, data)
 }
 
 /**
  * 编辑导购营销任务
  */
 export function MARKETING_TASK_EDIT_INFO(data) {
-    return Request('/api/v6/c_minipeace/marketing_task/create_info/post', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/marketing_task/create_info/post', 'POST', undefined, data)
 }
 
 /**
  * 查询店长相关联的导购
  */
 export function GET_SEARCH_RELATED_USERS(data) {
-    return Request('/api/v6/c_minipeace/res_users/search_related_users/get', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/res_users/search_related_users/get', 'POST', undefined, data)
 }
 
 /**
  * 更新任务接口
  */
 export function UPDATE_TASK_INFO(data) {
-    return Request('/api/v6/c_minipeace/marketing_task/update_info/post', 'POST', undefined, data, false)
+    return Request('/api/v6/c_minipeace/marketing_task/update_info/post', 'POST', undefined, data)
+}
+
+/**
+ * 更新任务会员对象接口
+ */
+export function UPDATE_MEMBER_INFO(data) {
+    return Request('/api/v6/c_minipeace/marketing_task/update_member_info/post', 'POST', undefined, data)
 }

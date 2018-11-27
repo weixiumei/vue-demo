@@ -58,10 +58,10 @@ module.exports = {
 
     build: {
         // Template for index.html
-        index: path.resolve(__dirname, '../../create_task/index.html'),
+        index: path.resolve(__dirname, '../create_task/index.html'),
 
         // Paths
-        assetsRoot: path.resolve(__dirname, '../../create_task'),
+        assetsRoot: path.resolve(__dirname, '../create_task'),
         assetsSubDirectory: 'static',
         assetsPublicPath: './',
 

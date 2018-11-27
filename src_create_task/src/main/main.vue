@@ -23,6 +23,5 @@ export default {
 <style scoped>
 .app {
   background: #EDF0F4
-
 }
 </style>
